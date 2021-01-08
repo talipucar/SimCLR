@@ -57,6 +57,11 @@ If the last step causes issues, you can try one of the following suggestions:
 You can train the model using any supported dataset. For now, STL10 is recommended to use. The more datasets will be 
 supported in the future.
 
+To pre-train the model using STL10 dataset, you can use following command:
+```
+python 0_train_encoder.py -d "STL10" -img 96
+```
+
 # Evaluation
 ## Evaluation of trained SSL representations
 1. Logistic regression model is trained, using representations extracted from Encoder using training set of
@@ -69,6 +74,24 @@ specified dataset.
 dimension is same as that of representations from Encoder (to be a fair comparison). 
 3. Logistic regression model is trained, using data obtained using PCA, the results are reported on both training and
 test sets.
+
+## Running evaluation script
+Once you have a trained model, you can evaluate the model performance on any dataset. Correct image size should be provided
+with corresponding dataset to get correct results since the model architecture is agnostic to image size and will not flag
+error if correct image size is not specified.
+
+Two examples: 
+1. Evaluating on STL10
+```
+python 1_eval_linear_classifier.py -d "STL10" -img 96
+```
+2. Evaluating on CIFAR10
+```
+python 1_eval_linear_classifier.py -d "CIFAR10" -img 32
+```
+
+For further details on what arguments you can use (or to add your own arguments), you can check out "/utils/arguments.py"
+
 
 # Results
 
@@ -85,28 +108,6 @@ results
 
 You can save results of evaluations under "evaluation" folder.
 
-# Running scripts
-## Training
-To pre-train the model using STL10 dataset, you can use following command:
-```
-python 0_train_encoder.py -d "STL10" -img 96
-```
-## Evaluation
-Once you have a trained model, you can evaluate the model performance on any dataset. Correct image size should be provided
-with corresponding dataset to get correct results since the model architecture is agnostic to image size and will not flag
-error if correct image size is not specified.
-
-Two examples: 
-1. Evaluating on STL10
-```
-python 1_eval_linear_classifier.py -d "STL10" -img 96
-```
-2. Evaluating on CIFAR10
-```
-python 1_eval_linear_classifier.py -d "CIFAR10" -img 32
-```
-
-For further details on what arguments you can use (or to add your own arguments), you can check out "/utils/arguments.py"
 
 # Experiment tracking
 MLFlow is used to track experiments. It is turned off by default, but can be turned on by changing option in 
