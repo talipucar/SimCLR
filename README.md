@@ -43,10 +43,10 @@ Run following commands in order to set up the environment:
 ```
 pip install pipenv          # To install pipenv if you don't have it already
 pipenv shell                # To activate virtual env
-pipenv install              # To install required packages. If this fails, use 'pipenv lock --pre --clear', or remove lock file, and re-try this step.
+pipenv install              # To install required packages. 
 ```
 <pre>
-If last step causes issues, You can try one of the following suggestions:
+If the last step causes issues, you can try one of the following suggestions:
 - removing lock file (if it exists) and re-do ```pipenv install```  
 - removing lock file (if it exists) and use ```pipenv install --skip-lock```
 - use ```pipenv lock --pre --clear``` 
