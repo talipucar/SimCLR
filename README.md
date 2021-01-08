@@ -41,10 +41,17 @@ It requires Python 3.8. You can set up the environment by following three steps:
 
 Run following commands in order to set up the environment:
 ```
-pip install pipenv
-python -m pipenv shell
-python -m pipenv install
+pip install pipenv          # To install pipenv if you don't have it already
+pipenv shell                # To activate virtual env
+pipenv install              # To install required packages. If this fails, use 'pipenv lock --pre --clear', or remove lock file, and re-try this step.
 ```
+<pre>
+If last step causes issues, You can try one of the following suggestions:
+- removing lock file (if it exists) and re-do ```pipenv install```  
+- removing lock file (if it exists) and use ```pipenv install --skip-lock```
+- use ```pipenv lock --pre --clear``` 
+- You can install packages defined in Pipfile by using pip i.e. "pip install package_name". 
+</pre>
 
 # Training
 You can train the model using any supported dataset. For now, STL10 is recommended to use. The more datasets will be 
