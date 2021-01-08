@@ -1,7 +1,7 @@
 """
 Main function for training for Autoencoder-based supervised learning.
 Author: Talip Ucar
-Email: ucabtuc@ucl.ac.uk
+Email: ucabtuc@gmail.com
 Version: 0.1
 """
 
