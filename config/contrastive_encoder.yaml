@@ -1,0 +1,18 @@
+---
+supervised: false                 # Set supervision
+conv_dims:                        # Architecture for Encoder with convolutional layers
+  - [ 3,  32, 5, 2, 1, 1]         # i=input channel, o=output channel, k = kernel, s = stride, p = padding, d = dilation
+  - [32,  64, 5, 2, 1, 1]         # [i, o, k, s, p, d]
+  - [64, 128, 5, 2, 1, 1]         # [i, o, k, s, p, d]
+  - 128                           # Dimension of bottleneck layer
+isBatchNorm: false                # Set True to use BatchNorm layer
+isDropout: false                  # Set True to use Dropout layer
+dropout_rate: 0.5                 # Set dropout rate if Dropout is being used
+tau: 0.1                          # temperature parameter used in NTXentLoss
+learning_rate: 0.001              # Learning rate for training
+epochs: 20                        # Number of epochs to use for training
+batch_size: 2048                  # Set batch size
+cosine_similarity: False          # If True, use cosine similarity in NTXentLoss. Else, use dot product.
+p_norm: 2                         # p-value used for normalization. p=2 for L2 norm, p=1 for L1 norm and so on.
+output_dim: 2                     # Classifier output dimension if it is being used. For binary classification, use 2.
+nth_epoch: 1                      # Compute validation loss in every nth_epoch
