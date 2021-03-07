@@ -1,8 +1,10 @@
 """
-Library of loss functions.
 Author: Talip Ucar
 Email: ucabtuc@gmail.com
 Version: 0.1
+
+Library of loss functions.
+
 """
 
 import numpy as np

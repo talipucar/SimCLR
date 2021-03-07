@@ -1,12 +1,12 @@
 """
-Main function for training for Autoencoder-based supervised learning.
+Main function to evaluate representation power of the models using linear classification.
 Author: Talip Ucar
 Email: ucabtuc@gmail.com
 Version: 0.1
 """
 
 import mlflow
-from src.model import ContrastiveEncoder, Classifier
+from src.model import ContrastiveEncoder
 from utils.load_data import Loader
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
@@ -17,34 +17,29 @@ from utils.arguments import get_arguments, get_config
 from utils.utils import set_dirs
 
 
-
 def eval(config):
     """
-    :param dict unsupervised_config: Dictionary containing options.
-    :param list training_fold: A list containing k-fold of processed_data.
-    :param bool save_weights: Saves src weights if True.
-    :return:
-
-    Utility function for saving on one training fold.
+    :param dict config: Dictionary containing options.
+    :return: None
     """
     # Don't use unlabelled data in train loader
     config["unlabelled_data"] = False
-    # Pre-process, save, and load data. train=False is used to turn of transofrmations for training set.
-    data_loader = Loader(config, download=True, get_all_train=True, get_all_test=True, train=False)
-    # Get data. If check_sample==True, it will show shome images from the training set as a sanity check.
-    Xtrain, ytrain, Xtest, ytest, Xtrain2D, Xtest2D = transform_data(data_loader, check_samples=False)
     # Print which dataset we are using
     print(f"{config['dataset']} is being used to test performance.")
     # Get the performance using contrastive encoder
-    contrastive_encoder_performance(Xtrain, ytrain, Xtest, ytest)
+    contrastive_encoder_performance(config)
     # Get the baseline performance
-    baseline_performance(Xtrain2D, ytrain, Xtest2D, ytest)
+    baseline_performance()
 
-def baseline_performance(Xtrain2D, ytrain, Xtest2D, ytest):
+def baseline_performance():
+    # Load data. train=False to turn off transformations. get_all_*=True to load all samples in a single batch. 
+    data_loader = Loader(config, download=True, get_all_train=True, get_all_test=True, train=False)
+    # Get data. If check_sample==True, it will show shome images from the training set as a sanity check.
+    Xtrain2D, ytrain, Xtest2D, ytest = transform_data(data_loader, check_samples=False)
     # Turn tensors into numpy arrays since they will be used with PCA
     Xtrain2D, Xtest2D = Xtrain2D.cpu().detach().numpy(), Xtest2D.cpu().detach().numpy()
     # Lower feature dimension to same as the one of the output dimension of contranstive encoder to be a fair comparison
-    pca = PCA(n_components=config["conv_dims"][-1])
+    pca = PCA(n_components=config["projection_dim"] if config["resnet18"] or config["resnet50"] else  config["conv_dims"][-1])
     # Fit training data and transform
     X_train_pca = pca.fit_transform(Xtrain2D)
     # Transform test data
@@ -52,19 +47,20 @@ def baseline_performance(Xtrain2D, ytrain, Xtest2D, ytest):
     # Baseline performance using PCA
     linear_model_eval(X_train_pca, ytrain, X_test_pca, ytest, description="Baseline Performance")
 
-def contrastive_encoder_performance(Xtrain, ytrain, Xtest, ytest):
+def contrastive_encoder_performance(config):
+    # Load data. train=False is used to turn off transofrmations for training set.
+    data_loader = Loader(config, download=True, get_all_train=False, get_all_test=False, train=False)
     # Instantiate model
     model = ContrastiveEncoder(config)
     # Load contrastive encoder
     model.load_models()
-    # Change the mode to evaluation
-    model.set_mode("evaluation")
-    # Get representations using Training and Test sets
-    _, h_train = model.contrastive_encoder(Xtrain)
-    _, h_test = model.contrastive_encoder(Xtest)
-    # Turn tensors into numpy arrays since they will be used with Logistic regression model
-    h_train, h_test = h_train.cpu().detach().numpy(), h_test.cpu().detach().numpy()
-    # Get performance
+    # Move the model to the device
+    model.contrastive_encoder.to(config["device"])
+    # Get representations, and labels using Training set
+    h_train, ytrain = model.predict(data_loader.train_loader)
+    # Get representations, and labels using Test set
+    h_test, ytest = model.predict(data_loader.test_loader)
+    # Get performance by using linear classifier
     linear_model_eval(h_train, ytrain, h_test, ytest, description="SimCLR Performance")
 
 def linear_model_eval(X_train, y_train, X_test, y_test, use_scaler=False, description="Baseline: PCA + Logistic Reg."):
@@ -94,7 +90,7 @@ def transform_data(data_loader, check_samples=False):
     # Make it a 2D array of batch_size x remaining dimension so that we can use it with PCA for baseline performance
     Xtrain2D, Xtest2D = Xtrain.view(Xtrain.shape[0], -1), Xtest.view(Xtest.shape[0], -1)
     # Return arrays
-    return Xtrain, ytrain, Xtest, ytest,  Xtrain2D, Xtest2D
+    return Xtrain2D, ytrain, Xtest2D, ytest
 
 def scale_data(Xtrain, Xtest):
     # Initialize scaler

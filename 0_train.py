@@ -6,7 +6,7 @@ Version: 0.1
 """
 
 import time
-import mlflow
+#import mlflow
 from src.model import ContrastiveEncoder
 from utils.load_data import Loader
 from utils.arguments import get_arguments, get_config, print_config_summary
@@ -26,7 +26,11 @@ def train(config, data_loader, save_weights=True):
     # Start the clock to measure the training time
     start = time.process_time()
     # Fit the model to the data
-    encoder.fit(data_loader)
+    if config["tune_model"]:
+        print("Tuning pre-trained model with further training.")
+        encoder.tune(data_loader)
+    else:
+        encoder.fit(data_loader)
     # Total time spent on training
     training_time = time.process_time() - start
     # Report the training time
@@ -62,11 +66,11 @@ if __name__ == "__main__":
     # --If True, start of MLFlow for experiment tracking:
     if config["mlflow"]:
         # Experiment name
-        mlflow.set_experiment(experiment_name=config["model_mode"]+"_"+str(args.experiment))
+        #mlflow.set_experiment(experiment_name=config["model_mode"]+"_"+str(args.experiment))
         # Start a new mlflow run
-        with mlflow.start_run():
+        #with mlflow.start_run():
             # Run the main
-            main(config)
+        main(config)
     else:
         # Run the main
         main(config)

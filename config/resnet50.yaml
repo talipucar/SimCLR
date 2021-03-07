@@ -1,20 +1,19 @@
 ---
-# ResNet options (Don't change these 3 options)
+# ResNet options (Don't change these 2 options)
 resnet18: false                   # If true, it loads resnet18 architecture
-resnet50: false                   # If true, it loads resnet50 architecture
+resnet50: true                    # If true, it loads resnet50 architecture
+
+# Any option from here onwards can be changed
 pretrained: false                 # If true, it loads pre-trained resnet models if resnet is being used.
+projection_dim: 128               # Dimension of the final projection (i.e., output)
 
 # Any option from here onwards can be changed
 # Custom Encoder
 conv_dims:                        # Custom architecture for Encoder with convolutional layers, an alternative to resnet.
-  - [  3,  32, 5, 2, 1, 1]        # i=input channel, o=output channel, k = kernel, s = stride, p = padding, d = dilation
-  - [ 32, 128, 5, 2, 1, 1]        # [i, o, k, s, p, d]
-  - [128, 512, 5, 2, 1, 1]        # [i, o, k, s, p, d]
-  - 512                           # Dimension of bottleneck layer
-
-# Batchnorm & Dropout
-isBatchNorm: false                # Set True to use BatchNorm layer
-isDropout: false                  # Set True to use Dropout layer
+  - [ 3,  32, 5, 2, 1, 1]         # i=input channel, o=output channel, k = kernel, s = stride, p = padding, d = dilation
+  - [32,  64, 5, 2, 1, 1]         # [i, o, k, s, p, d]
+  - [64, 128, 5, 2, 1, 1]         # [i, o, k, s, p, d]
+  - 128                           # Dimension of bottleneck layer
 
 # Hyper-parameters
 learning_rate: 0.001              # Learning rate for training

@@ -12,6 +12,9 @@ __pycache__/
 # Data
 data/*
 
+# Results
+results/*
+
 # Byte-compiled / optimized / DLL files
 **/__pycache__
 __pycache__/

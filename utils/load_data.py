@@ -1,8 +1,10 @@
 """
-TODO: Remove Data loader code adapted from https://raw.githubusercontent.com/mdiephuis/SimCLR/master/data.py
 Author: Talip Ucar
 Email: ucabtuc@gmail.com
 Version: 0.1
+
+A library of functions to transform and load data.
+
 """
 
 import os
@@ -11,7 +13,7 @@ from torchvision import datasets, transforms
 
 class DataTransforms(object):
     """
-    Generates two transformed samples (referred as position pairs) for each sample from the dataset.
+    Returns two transformed samples (positive pairs) from a given input for each sample of the dataset.
     """
 
     def __init__(self, size, train=True, jitter_strength=1.0):
@@ -76,7 +78,7 @@ class Loader(object):
         # Set the loader for training set
         self.train_loader = DataLoader(train_dataset, batch_size=train_batch_size, shuffle=True, drop_last=True, **kwargs)
         # Set the loader for test set
-        self.test_loader = DataLoader(test_dataset, batch_size=test_batch_size, shuffle=False, **kwargs)
+        self.test_loader = DataLoader(test_dataset, batch_size=test_batch_size, shuffle=False, drop_last=True, **kwargs)
         # Extract one batch to get image shape
         ((xi, _), _) = self.train_loader.__iter__().__next__()
         # Image shape after removing first dimension (which is batch size)
@@ -90,7 +92,7 @@ class Loader(object):
         # Get train transformation
         train_transform = DataTransforms(size=self.config["img_size"], train=self.train)
         # Get test transformation
-        test_transform = DataTransforms(size=self.config["img_size"], train=False)
+        test_transform = DataTransforms(size=self.config["img_size"], train=self.train)
         # Create dictionary for loading functions of datasets
         loader_map = {'STL10': datasets.STL10, 'CIFAR10': datasets.CIFAR10, 'MNIST': datasets.MNIST}
         # Get dataset

@@ -14,6 +14,7 @@ from numpy.random import seed
 import random as python_random
 import pandas as pd
 from sklearn.utils import shuffle
+from texttable import Texttable
 
 
 def set_seed(options):
@@ -72,7 +73,6 @@ def set_dirs(config):
     print("Directories are set.")
 
 
-
 def get_runtime_and_model_config():
     try:
         with open("./config/runtime.yaml", "r") as file:
@@ -85,16 +85,16 @@ def get_runtime_and_model_config():
 
 
 def update_config_with_model(config):
-    model_config = config["unsupervised"]["model_mode"]
+    # Get model_mode from runtime.yaml
+    model_config = config["model_mode"]
+    # Load model specific configuration
     try:
         with open("./config/"+model_config+".yaml", "r") as file:
             model_config = yaml.safe_load(file)
     except Exception as e:
         sys.exit("Error reading model config file")
+    # Update the runtime configuration with the model specific configuration
     config.update(model_config)
-    # TODO: Clean up structure of configs
-    # Add sub-category "unsupervised" as a flat hierarchy to the config:
-    config.update(config["unsupervised"])
     return config
 
 
@@ -106,3 +106,19 @@ def update_config_with_model_dims(data_loader, config):
     config["dims"].insert(0, dim)
     return config
 
+def print_config(args):
+    """
+    Prints the YAML config and ArgumentParser arguments in a neat format.
+    :param args: Parameters/config used for the model.
+    """
+    # Yaml config is a dictionary while parser arguments is an object. Use vars() only on parser arguments.
+    if type(args) is not dict:
+        args = vars(args)
+    # Sort keys
+    keys = sorted(args.keys())
+    # Initialize table
+    table = Texttable() 
+    # Add rows to the table under two columns ("Parameter", "Value").
+    table.add_rows([["Parameter", "Value"]] +  [[k.replace("_"," ").capitalize(),args[k]] for k in keys])
+    # Print the table.
+    print(table.draw())

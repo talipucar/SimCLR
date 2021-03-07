@@ -2,6 +2,12 @@
 Author: Talip Ucar
 Email: ucabtuc@gmail.com
 Version: 0.1
+
+A library of models used in self-supervised learning framework.
+---------------------------------------------------------------
+CNNEncoder: A custom encoder
+ResNet: A wrapper to use ResNet18, or ResNet50 backbone models.
+
 """
 
 import os
@@ -57,7 +63,7 @@ class CNNEncoder(nn.Module):
 
     def forward(self, x):
         # batch size, height, width, channel of the input
-        bs, h, w, ch = x.size()
+        # bs, h, w, ch = x.size()
         # Forward pass on convolutional layers
         for layer in self.layers:
             x = layer(x)
@@ -69,28 +75,40 @@ class CNNEncoder(nn.Module):
         z = self.linear_layer2(z)
         return z, h
 
-
-class Classifier(nn.Module):
-    def __init__(self, options):
-        super(Classifier, self).__init__()
-
+class ResNet(nn.Module):
+    def __init__(self, encoder, options):
+        super(ResNet, self).__init__()
+        
+        # Copy options
         self.options = copy.deepcopy(options)
-        # Add hidden layers
-        self.l1 = nn.Linear(self.options["dims"][-1], 128)
-        self.l2 = nn.Linear(128, 128)
-        self.l3 = nn.Linear(128, 128)
-        self.logits = nn.Linear(128, 1)
-        self.probs = nn.Sigmoid()
+        # Get resnet as an encoder
+        self.encoder = encoder
+        # Get the dimensions of fully-connected layer of resnet
+        output_dim = self.encoder.fc.in_features
+        # Turn fully-connected layet of resnet into an Identity 
+        self.encoder.fc = Identity()
+        # First linear layer, which will be followed with non-linear activation function in the forward()
+        self.linear_layer1 = nn.Linear(output_dim, output_dim)
+        # Last linear layer for final projection
+        self.linear_layer2 = nn.Linear(output_dim, options["projection_dim"])
+        
+    def forward(self, x):
+        # Forward pass on encoder
+        h = self.encoder(x)
+        # Apply linear layer followed by non-linear activation to decouple final output, z, from representation layer h.
+        z = F.relu(self.linear_layer1(h))
+        # Apply final linear layer
+        z = self.linear_layer2(z)
+        return z, h
 
-    def forward(self, h):
-        h = F.relu(self.l1(h))
-        h = F.relu(self.l2(h))
-        h = F.relu(self.l3(h))
-        logits = self.logits(h)
-        probs = self.probs(logits)
-        return probs
+class Identity(nn.Module):
+    """Returns input as is."""
+    def __init__(self):
+        super(Identity, self).__init__()
 
-
+    def forward(self, x):
+        return x
+    
 class Flatten(nn.Module):
     "Flattens tensor to 2D: (batch_size, feature dim)"
     def forward(self, x):
