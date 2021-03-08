@@ -47,7 +47,8 @@ Architecture is agnostic to input image size.
 2. Resnet18 ("./config/resnet18.yaml")
 3. Resnet50 ("./config/resnet50.yaml") 
 
-You can define which one to use by defining **model_mode** in ("./config/runtime.yaml") e.g. "model_mode: contrastive_encoder", or "model_mode: resnet50"
+You can define which one to use by defining ```model_mode``` in ("./config/runtime.yaml"). For example:
+- ```model_mode: contrastive_encoder```, or ```model_mode: resnet50```
 
 # Datasets
 Following datasets are supported:
