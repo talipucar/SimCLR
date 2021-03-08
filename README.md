@@ -26,7 +26,9 @@ Otherwise, read on...
 
 <sup>Source: https://ai.googleblog.com/2020/04/advancing-self-supervised-and-semi.html </sub>
 # Model
-A custom CNN-based encoder model is provided, and its architecture is defined in 
+It supports 3 models:
+
+1. A custom CNN-based encoder model is provided, and its architecture is defined in 
 yaml file of the model ("./config/contrastive_encoder.yaml"). 
 
 Example: 
@@ -42,7 +44,10 @@ conv_dims:
 by modifying it in yaml file. You can add more layers, or change the dimensions of existing ones. 
 Architecture is agnostic to input image size.
 
-Resnet18 and Resnet50 models will be supported in the future.
+2. Resnet18 ("./config/resnet18.yaml")
+3. Resnet50 ("./config/resnet50.yaml") 
+
+You can define which one to use by defining **model_mode** in ("./config/runtime.yaml") e.g. "model_mode: contrastive_encoder", or "model_mode: resnet50"
 
 # Datasets
 Following datasets are supported:
