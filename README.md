@@ -7,6 +7,21 @@ Pytorch implementation of SimCLR (https://arxiv.org/pdf/2002.05709.pdf) with cus
 
 Otherwise, read on...
 
+**Table of Contents:**
+
+- [Model](#model)
+- [Datasets](#datasets)
+- [Environment](#environment)
+- [Configuration](#configuration)
+- [Training](#Training)
+- [Evaluation](#Evaluation)
+- [Results](#results)
+- [Experiment tracking](#experiment-tracking)
+- [Tricks and Warnings](#tricks-and-warnings)
+- [Summary](#summary)
+- [Feeling Lazy](#feeling-lazy)
+- [Citing this repo](#citing-this-repo)
+
 ![SimCLR](./assets/simclr.gif)
 
 <sup>Source: https://ai.googleblog.com/2020/04/advancing-self-supervised-and-semi.html </sub>
@@ -37,7 +52,7 @@ Following datasets are supported:
 
 For example, the encoder can be trained on STL10, and evaluated on both STL10 and CIFAR10.
 
-# Environment - Installation
+# Environment
 It is tested with Python 3.7, or 3.8. You can set up the environment by following three steps:
 1. Install pipenv using pip
 2. Activate virtual environment
