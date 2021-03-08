@@ -7,20 +7,20 @@ Pytorch implementation of SimCLR (https://arxiv.org/pdf/2002.05709.pdf) with cus
 
 Otherwise, read on...
 
-**Table of Contents:**
+# Table of Contents:
 
-- [Model](#model)
-- [Datasets](#datasets)
-- [Environment](#environment)
-- [Configuration](#configuration)
-- [Training](#Training)
-- [Evaluation](#Evaluation)
-- [Results](#results)
-- [Experiment tracking](#experiment-tracking)
-- [Tricks and Warnings](#tricks-and-warnings)
-- [Summary](#summary)
-- [Feeling Lazy](#feeling-lazy)
-- [Citing this repo](#citing-this-repo)
+1. [Model](#model)
+2. [Datasets](#datasets)
+3. [Environment](#environment)
+4. [Configuration](#configuration)
+5. [Training](#Training)
+6. [Evaluation](#Evaluation)
+7. [Results](#results)
+8. [Experiment tracking](#experiment-tracking)
+9. [Tricks and Warnings](#tricks-and-warnings)
+10. [Summary](#summary)
+11. [Feeling Lazy](#feeling-lazy)
+12. [Citing this repo](#citing-this-repo)
 
 ![SimCLR](./assets/simclr.gif)
 
